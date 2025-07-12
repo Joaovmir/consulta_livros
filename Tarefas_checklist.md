@@ -4,8 +4,8 @@ Claro, aqui está um checklist simplificado em formato Markdown para você acomp
 
 **Fase 1: Coleta de Dados**
 - [x] Criar script de web scraping para o site `https://books.toscrape.com/`.
-- [ ] Extrair todos os livros e seus dados (título, preço, avaliação, etc.).
-- [ ] Salvar os dados coletados em um arquivo CSV.
+- [x] Extrair todos os livros e seus dados (título, preço, avaliação, etc.).
+- [x] Salvar os dados coletados em um arquivo CSV.
 - [ ] Documentar o script de scraping.
 
 **Fase 2: Desenvolvimento da API**
