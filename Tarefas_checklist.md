@@ -33,11 +33,11 @@ Claro, aqui está um checklist simplificado em formato Markdown para você acomp
 
 ### Desafios Adicionais (Bônus)
 
-- [ ] **Endpoints de Insights:**
-    - [ ] `GET /api/v1/stats/overview`
-    - [ ] `GET /api/v1/stats/categories`
-    - [ ] `GET /api/v1/books/top-rated`
-    - [ ] `GET /api/v1/books/price-range`
+- [x] **Endpoints de Insights:**
+    - [x] `GET /api/v1/stats/overview`
+    - [x] `GET /api/v1/stats/categories`
+    - [x] `GET /api/v1/books/top-rated`
+    - [x] `GET /api/v1/books/price-range`
 - [ ] **Sistema de Autenticação:**
     - [ ] Implementar autenticação com JWT.
     - [ ] Criar endpoints `POST /api/v1/auth/login` e `refresh`.
