@@ -69,13 +69,21 @@ def coleta_info_livros(driver:webdriver, links_livros:list[str]):
         'categoria': [],
         'imagem': []
     }
+    
+    avaliacoes_numericas = {
+    'One': 1,
+    'Two': 2,
+    'Three': 3,
+    'Four': 4,
+    'Five': 5
+    }
 
     for link_livro in links_livros:
         driver.get(link_livro)
         
         info_livros['titulo'].append(driver.find_element(By.CLASS_NAME, 'product_main').find_element(By.TAG_NAME, 'h1').text)
-        info_livros['preco'].append(driver.find_element(By.CLASS_NAME, 'price_color').text)
-        info_livros['avaliacao'].append(driver.find_element(By.CLASS_NAME, 'star-rating').get_attribute('class').split()[-1])
+        info_livros['preco'].append(driver.find_element(By.CLASS_NAME, 'price_color').text.replace('£', '').strip())
+        info_livros['avaliacao'].append(avaliacoes_numericas.get(driver.find_element(By.CLASS_NAME, 'star-rating').get_attribute('class').split()[-1]))
         info_livros['disponibilidade'].append(driver.find_element(By.CLASS_NAME, 'instock').text.split('(')[0].strip())
         info_livros['estoque'].append(driver.find_element(By.CLASS_NAME, 'instock').text.split('(')[1].split(' ')[0])
         info_livros['categoria'].append(driver.find_element(By.CLASS_NAME, 'breadcrumb').text.split(' ')[2]) 

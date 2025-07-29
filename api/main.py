@@ -141,7 +141,7 @@ def get_livros():
     return dados_livros.to_dict(orient="records")
 
 @app.get(
-    "/api/v1/book/{id_livro}",
+    "/api/v1/books/{id_livro}",
     response_model=Book,
     summary="Obter um livro por ID",
     tags=["Livros"]

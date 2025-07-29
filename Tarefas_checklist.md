@@ -6,7 +6,6 @@ Claro, aqui está um checklist simplificado em formato Markdown para você acomp
 - [x] Criar script de web scraping para o site `https://books.toscrape.com/`.
 - [x] Extrair todos os livros e seus dados (título, preço, avaliação, etc.).
 - [x] Salvar os dados coletados em um arquivo CSV.
-- [ ] Alterar formato de dados coletados (Coluna de preço e avaliação).
 - [ ] Documentar o script de scraping.
 
 **Fase 2: Desenvolvimento da API**
@@ -17,7 +16,6 @@ Claro, aqui está um checklist simplificado em formato Markdown para você acomp
 - [x] Implementar o endpoint `GET /api/v1/books/search`.
 - [x] Implementar o endpoint `GET /api/v1/categories`.
 - [x] Documentar a API com Swagger (ou similar).
-- [ ] Checar inconsistência do endpoint `GET /api/v1/books/{id}` com os outros  `GET /api/v1/books/` (Usando atualmente book).
 
 **Fase 3: Deploy e Documentação**
 - [ ] Organizar o código em um repositório no GitHub.
