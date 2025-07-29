@@ -13,19 +13,30 @@ O projeto está organizado da seguinte forma para manter o código limpo e modul
 
 ```
 /CONSULTA_LIVROS/
-|
-|-- api/
-|   |-- main.py            # O código da API FastAPI
-|
-|-- data/
-|   |-- info_livros.csv    # Ficheiro de dados gerado pelo scraper
-|
-|-- scripts/
-|   |-- webscraping_livros.py # O script para extrair os dados
-|
-|-- .gitignore             # Ficheiros e pastas a serem ignorados pelo Git
-|-- README.md              # Este ficheiro de documentação
-|-- requirements.txt       # Lista de dependências Python
+│
+├── api/
+│   ├── main.py              # Código principal da API FastAPI
+│   ├── auth.py              # Lógica de autenticação com JWT
+│
+├── database/
+│   ├── db.py                # Conexão com SQLite usando SQLAlchemy
+│   ├── init_db.py           # Criação da tabela users e usuário admin
+│   └── users.db             # Arquivo do banco de dados SQLite
+│
+├── models/
+│   ├── user.py              # Modelo SQLAlchemy para User
+│   ├── book_models.py       # Modelos Pydantic para livros e estatísticas
+│   └── health.py            # Modelo Pydantic para o health check
+│
+├── scripts/
+│   └── webscraping_livros.py  # Script de scraping de livros
+│
+├── data/
+│   └── info_livros.csv      # Arquivo CSV com os dados extraídos do site
+│
+├── requirements.txt         # Lista de dependências do projeto
+├── README.md                # Documentação do projeto
+└── .gitignore               # Arquivos/pastas ignoradas pelo Git
 |
 ... (outros ficheiros de configuração)
 ```
@@ -34,10 +45,9 @@ O projeto está organizado da seguinte forma para manter o código limpo e modul
 
 ## ⚙️ Pré-requisitos
 
-Antes de começar, certifique-se de que tem o **Python** instalado. Depois, abra o seu terminal na pasta raiz do projeto (`/CONSULTA_LIVROS/`) e instale todas as bibliotecas necessárias a partir do ficheiro `requirements.txt`.
+Antes de começar, certifique-se de que tem o **Python 3.10+** instalado. Depois, abra o seu terminal na pasta raiz do projeto (`/CONSULTA_LIVROS/`) e instale todas as bibliotecas necessárias a partir do ficheiro `requirements.txt`.
 
 ```bash
-# Instala todas as dependências de uma só vez
 pip install -r requirements.txt
 ```
 
@@ -47,25 +57,53 @@ pip install -r requirements.txt
 
 Siga estes passos na ordem correta. **Execute todos os comandos a partir da pasta raiz do projeto (`/CONSULTA_LIVROS/`)**.
 
-### **Passo 1: Extrair os Dados (Executar o Scraper)**
+### **(Opcional) Passo 1: Extrair os Dados**
 
-Primeiro, precisamos de criar o nosso ficheiro de dados. Para isso, execute o script de scraping.
+Caso ainda não tenha o arquivo de dados, execute o scraping. O scraping só pode ser executado via endpoint da API, pois implementamos autenticação para proteger a rota, e requer um **usuário autenticado com perfil admin**.
 
+1. Inicie a API:
 ```bash
-python scripts/webscraping_livros.py
+uvicorn api.main:app --reload
 ```
 
-O script irá:
+2. Faça login (via Postman):
+- Método: POST
+- URL: http://127.0.0.1:8000/api/v1/auth/login
+- Body (x-www-form-urlencoded):
+  - username: admin
+  -vpassword: admin123
 
-1.  Iniciar um navegador Chrome em segundo plano (modo *headless*).
-2.  Navegar pelo site `books.toscrape.com` e recolher os dados.
-3.  Criar a pasta `data/` (se não existir) e guardar tudo no ficheiro `data/info_livros.csv`.
+Copie o access_token da resposta.
+
+3. Faça a chamada para o endpoint de scraping:
+- Método: POST
+- URL: http://127.0.0.1:8000/api/v1/scraping/trigger
+  - Headers:
+    - Authorization: Bearer <cole_seu_token_aqui>
+
+Se tudo correr bem, você receberá:
+
+```json
+{
+  "mensagem": "Scraping executado com sucesso e dados atualizados!"
+}
+```
+
+Isso irá:
+
+1.  Solicitar no terminal se "Deseja abrir o navegador visivelmente? (s/n)"
+2.  Iniciar um navegador Chrome em segundo plano (modo *headless*).
+3.  Navegar pelo site `books.toscrape.com` e recolher os dados.
+4.  Criar a pasta `data/` (se não existir) 
+5.  Solicitar "Escreva um nome para o arquivo de dados (apenas o nome, sem o formato .csv):"
+6.  Informe o nome `info_livros`.
+7.  Guardar tudo no ficheiro `data/info_livros.csv`.
 
 Aguarde até que a mensagem `✅ Arquivo salvo com sucesso.` apareça no terminal.
 
 ### **Passo 2: Iniciar a API**
 
-Com o ficheiro `info_livros.csv` já criado, pode iniciar o servidor da API.
+Caso não tenha iniciado a API mas já tem o ficheiro `info_livros.csv` já criado, pode iniciar o servidor da API.
 
 ```bash
 uvicorn api.main:app --reload
