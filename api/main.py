@@ -8,49 +8,29 @@ from fastapi import FastAPI, Query, HTTPException, status, Path
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
+# JWT Authentication
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+from api.auth import authenticate_user, create_access_token, get_current_user
+from models.user import User
+from api.auth import get_db
+from datetime import timedelta
+
+# scripts/webscraping_livros.py função rodar_scraping
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  # permite importar de /scripts
+
+from scripts.webscraping_livros import rodar_scraping
+
 # ---------------------------------------------------------------------------
 # 1. Definição dos Modelos de Dados com Pydantic
 # ---------------------------------------------------------------------------
 
-class Book(BaseModel):
-    """Modelo de dados para um livro."""
-    id: int = Field(..., description="ID único do livro.")
-    titulo: str = Field(..., description="Título do livro.")
-    preco: float = Field(..., description="Preço do livro.")
-    avaliacao: float = Field(..., description="Avaliação média do livro (0 a 5).")
-    disponibilidade: bool = Field(..., description="Indica se o livro está disponível.")
-    estoque: int = Field(..., description="Quantidade em estoque.")
-    categoria: str = Field(..., description="Categoria do livro.")
-    imagem: str = Field(..., description="URL da imagem de capa do livro.")
-
-    # Configuração para permitir a conversão de objetos não-dict (como os do pandas)
-    class Config:
-        from_attributes = True
-
-class HealthCheckResponse(BaseModel):
-    """Modelo de resposta para a verificação de saúde da API."""
-    status: str
-    mensagem: str
-    livros_carregados: int
-    categorias_disponiveis: List[str]
-    quantidade_categorias: int
-    verificado_em: str
-    tempo_resposta_ms: float
-
-class StatsOverview(BaseModel):
-    """Modelo de resposta para as estatísticas gerais."""
-    total_livros: int
-    preco_medio: float
-    avaliacao_media: float
-    estoque_total: int
-
-class CategoryStats(BaseModel):
-    """Modelo de resposta para as estatísticas por categoria."""
-    categoria: str
-    total_livros: int
-    preco_medio: float
-    avaliacao_media: float
-    estoque_total: int
+from models.book_models import Book, StatsOverview, CategoryStats
+from models.health import HealthCheckResponse
+from models.user import User
 
 # ---------------------------------------------------------------------------
 # 2. Inicialização do FastAPI e Carregamento dos Dados
@@ -262,3 +242,46 @@ def stats_por_categoria():
     stats["estoque_total"] = stats["estoque_total"].astype(int)
 
     return stats.to_dict(orient="records")
+
+# EP login
+@app.post("/api/v1/auth/login", tags=["Autenticação"])
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    """
+    Realiza login e retorna um token JWT se as credenciais estiverem corretas.
+    """
+    user = authenticate_user(db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(status_code=400, detail="Credenciais inválidas")
+    
+    token = create_access_token(data={"sub": user.username}, expires_delta=timedelta(minutes=30))
+    return {"access_token": token, "token_type": "bearer"}
+
+# EP refresh
+@app.post("/api/v1/auth/refresh", tags=["Autenticação"])
+def refresh_token(current_user: User = Depends(get_current_user)):
+    """
+    Gera um novo token JWT para o usuário logado.
+    """
+    new_token = create_access_token(data={"sub": current_user.username})
+    return {"access_token": new_token, "token_type": "bearer"}
+
+# EP scraping
+@app.post("/api/v1/scraping/trigger", tags=["Admin"])
+def executar_scraping(current_user: User = Depends(get_current_user)):
+    """
+    Executa o scraping de livros. Disponível apenas para usuários administradores.
+    """
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Acesso negado: você não é admin.")
+    
+    try:
+        rodar_scraping()
+        return {"mensagem": "Scraping executado com sucesso e dados atualizados!"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao executar o scraping: {str(e)}")
+
+    # # REMOVER O return PARA ADICIONAR O SCRIPT DE SCRAPING ACIMA
+    # return {"mensagem": "Scraping iniciado com sucesso! 🚀"}

@@ -93,40 +93,45 @@ def coleta_info_livros(driver:webdriver, links_livros:list[str]):
 
 
 # ----------------------- PROGRAMA PRINCIPAL -----------------------
+def main ():
+    print('🔄 Iniciando o scraper de livros do site Books to Scrape...')
+    navegador_visivel = input("Deseja abrir o navegador visivelmente? (s/n): ").strip().lower()
 
-print('🔄 Iniciando o scraper de livros do site Books to Scrape...')
-navegador_visivel = input("Deseja abrir o navegador visivelmente? (s/n): ").strip().lower()
+    # Configuração do navegador
+    print('🛠️  Configurando o navegador...')
+    options = Options()
+    if navegador_visivel != 's':
+        print("🔒 Modo oculto (headless) ativado.")
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+        options.add_argument('--window-size=1920,1080')
 
-# Configuração do navegador
-print('🛠️  Configurando o navegador...')
-options = Options()
-if navegador_visivel != 's':
-    print("🔒 Modo oculto (headless) ativado.")
-    options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
-    options.add_argument('--window-size=1920,1080')
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    # Coleta de dados
+    print('🌐 1/4 Encontrando total de páginas...')
+    total_paginas = coleta_quantidade_paginas(driver)
+    print(f'📄 {total_paginas} páginas encontradas.')
 
-# Coleta de dados
-print('🌐 1/4 Encontrando total de páginas...')
-total_paginas = coleta_quantidade_paginas(driver)
-print(f'📄 {total_paginas} páginas encontradas.')
+    print('🌐 2/4 Coletando links de todos os livros...')
+    links_livros = coleta_links_livros(driver, total_paginas)
+    print(f'🔗 {len(links_livros)} links coletados.')
 
-print('🌐 2/4 Coletando links de todos os livros...')
-links_livros = coleta_links_livros(driver, total_paginas)
-print(f'🔗 {len(links_livros)} links coletados.')
+    print('🌐 3/4 Coletando as informações de cada um dos livros...')
+    info_livros = coleta_info_livros(driver, links_livros)
+    print(f'📘 {len(info_livros["titulo"])} livros processados com sucesso.')
 
-print('🌐 3/4 Coletando as informações de cada um dos livros...')
-info_livros = coleta_info_livros(driver, links_livros)
-print(f'📘 {len(info_livros["titulo"])} livros processados com sucesso.')
+    driver.quit()
+    print('🧹 Navegador encerrado.')
 
-driver.quit()
-print('🧹 Navegador encerrado.')
+    # Salvamento dos dados
+    nome_arquivo_csv = input('💾 Escreva um nome para o arquivo de dados (apenas o nome, sem o formato .csv): ')
+    print('📂 4/4 Salvando arquivo...')
+    tabela_livros = pd.DataFrame(info_livros)
+    tabela_livros.to_csv(f'data/{nome_arquivo_csv}.csv', index = False, sep = ';')
+    print('✅ Arquivo salvo na pasta /data.')
 
-# Salvamento dos dados
-nome_arquivo_csv = input('💾 Escreva um nome para o arquivo de dados (apenas o nome, sem o formato .csv): ')
-print('📂 4/4 Salvando arquivo...')
-tabela_livros = pd.DataFrame(info_livros)
-tabela_livros.to_csv(f'data/{nome_arquivo_csv}.csv', index = False, sep = ';')
-print('✅ Arquivo salvo na pasta /data.')
+# main()
+
+def rodar_scraping():
+    main()
