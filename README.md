@@ -81,14 +81,6 @@ Copie o access_token da resposta.
   - Headers:
     - Authorization: Bearer <cole_seu_token_aqui>
 
-Se tudo correr bem, você receberá:
-
-```json
-{
-  "mensagem": "Scraping executado com sucesso e dados atualizados!"
-}
-```
-
 Isso irá:
 
 1.  Solicitar no terminal se "Deseja abrir o navegador visivelmente? (s/n)"
