@@ -59,7 +59,7 @@ app = FastAPI(
 
 try:
     # O caminho para o CSV deve ser relativo ao local onde você executa o uvicorn
-    dados_livros = pd.read_csv("../data/info_livros.csv", sep=";")
+    dados_livros = pd.read_csv("data/info_livros.csv", sep=";")
     
     # Adiciona uma coluna 'id' baseada no índice do DataFrame
     dados_livros.reset_index(inplace=True)

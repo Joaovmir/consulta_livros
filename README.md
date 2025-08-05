@@ -72,7 +72,7 @@ uvicorn api.main:app --reload
 - URL: http://127.0.0.1:8000/api/v1/auth/login
 - Body (x-www-form-urlencoded):
   - username: admin
-  -vpassword: admin123
+  - password: admin123
 
 Copie o access_token da resposta.
 
@@ -81,14 +81,6 @@ Copie o access_token da resposta.
 - URL: http://127.0.0.1:8000/api/v1/scraping/trigger
   - Headers:
     - Authorization: Bearer <cole_seu_token_aqui>
-
-Se tudo correr bem, você receberá:
-
-```json
-{
-  "mensagem": "Scraping executado com sucesso e dados atualizados!"
-}
-```
 
 Isso irá:
 
