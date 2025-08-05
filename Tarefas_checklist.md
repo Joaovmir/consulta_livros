@@ -38,10 +38,10 @@ Claro, aqui está um checklist simplificado em formato Markdown para você acomp
     - [x] `GET /api/v1/stats/categories`
     - [x] `GET /api/v1/books/top-rated`
     - [x] `GET /api/v1/books/price-range`
-- [ ] **Sistema de Autenticação:**
-    - [ ] Implementar autenticação com JWT.
-    - [ ] Criar endpoints `POST /api/v1/auth/login` e `refresh`.
-    - [ ] Proteger rotas de administração.
+- [x] **Sistema de Autenticação:**
+    - [x] Implementar autenticação com JWT.
+    - [x] Criar endpoints `POST /api/v1/auth/login` e `refresh`.
+    - [x] Proteger rotas de administração.
 - [ ] **Pipeline ML-Ready:**
     - [ ] Criar endpoint `GET /api/v1/ml/features`.
     - [ ] Criar endpoint `GET /api/v1/ml/training-data`.
