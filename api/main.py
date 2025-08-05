@@ -13,19 +13,27 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from api.auth import authenticate_user, create_access_token, get_current_user
-from models.user import User
 from api.auth import get_db
 from datetime import timedelta
 
-# scripts/webscraping_livros.py função rodar_scraping
+# ---------------------------------------------------------------------------
+# 1. Importação de funções essenciais
+# ---------------------------------------------------------------------------
+
+# garantir import de funções fora de api/
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  # permite importar de /scripts
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  
 
+# scripts/webscraping_livros.py | função rodar_scraping
 from scripts.webscraping_livros import rodar_scraping
 
+# scripts\processamento_dados_ml.py | funções ml_features, ml_training_data
+from scripts.processamento_dados_ml import ml_features, ml_training_data
+from fastapi import Body
+
 # ---------------------------------------------------------------------------
-# 1. Definição dos Modelos de Dados com Pydantic
+# 2. Importação dos modelos de dados com Pydantic
 # ---------------------------------------------------------------------------
 
 from models.book_models import Book, StatsOverview, CategoryStats
@@ -33,7 +41,7 @@ from models.health import HealthCheckResponse
 from models.user import User
 
 # ---------------------------------------------------------------------------
-# 2. Inicialização do FastAPI e Carregamento dos Dados
+# 3. Inicialização do FastAPI e carregamento dos dados
 # ---------------------------------------------------------------------------
 
 app = FastAPI(
@@ -70,7 +78,7 @@ except FileNotFoundError:
 
 
 # ---------------------------------------------------------------------------
-# 3. Endpoints da API
+# 4. Endpoints da API
 # ---------------------------------------------------------------------------
 
 @app.get(
@@ -243,7 +251,6 @@ def stats_por_categoria():
 
     return stats.to_dict(orient="records")
 
-# EP login
 @app.post("/api/v1/auth/login", tags=["Autenticação"])
 def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
@@ -259,7 +266,6 @@ def login(
     token = create_access_token(data={"sub": user.username}, expires_delta=timedelta(minutes=30))
     return {"access_token": token, "token_type": "bearer"}
 
-# EP refresh
 @app.post("/api/v1/auth/refresh", tags=["Autenticação"])
 def refresh_token(current_user: User = Depends(get_current_user)):
     """
@@ -268,7 +274,6 @@ def refresh_token(current_user: User = Depends(get_current_user)):
     new_token = create_access_token(data={"sub": current_user.username})
     return {"access_token": new_token, "token_type": "bearer"}
 
-# EP scraping
 @app.post("/api/v1/scraping/trigger", tags=["Admin"])
 def executar_scraping(current_user: User = Depends(get_current_user)):
     """
@@ -283,5 +288,30 @@ def executar_scraping(current_user: User = Depends(get_current_user)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao executar o scraping: {str(e)}")
 
-    # # REMOVER O return PARA ADICIONAR O SCRIPT DE SCRAPING ACIMA
-    # return {"mensagem": "Scraping iniciado com sucesso! 🚀"}
+@app.get("/api/v1/ml/features", tags=["ML"])
+def retorna_features():
+    """
+    Retorna os dados formatados para features.
+    """
+    df = ml_features()
+    return df.to_dict(orient="records")
+
+@app.get("/api/v1/ml/training-data", tags=["ML"])
+def dados_treino_ml():
+    """
+    Retorna os dados para treino de modelos.
+    """
+    df = ml_training_data()
+    return df.to_dict(orient="records")
+
+@app.post("/api/v1/ml/predictions", tags=["ML"])
+def predicoes_ml(payload: dict = Body(...)):
+    """
+    Recebe os dados e responde com uma mensagem genérica.
+    """
+
+    return {
+        "mensagem": "Predição recebida com sucesso!",
+        "dados_recebidos": payload,
+        "nota": "Este endpoint está pronto para integrar com um modelo ML no futuro."
+    }

@@ -15,28 +15,29 @@ O projeto está organizado da seguinte forma para manter o código limpo e modul
 /CONSULTA_LIVROS/
 │
 ├── api/
-│   ├── main.py              # Código principal da API FastAPI
-│   ├── auth.py              # Lógica de autenticação com JWT
+│   ├── main.py                    # Código principal da API FastAPI
+│   ├── auth.py                    # Lógica de autenticação com JWT
 │
 ├── database/
-│   ├── db.py                # Conexão com SQLite usando SQLAlchemy
-│   ├── init_db.py           # Criação da tabela users e usuário admin
-│   └── users.db             # Arquivo do banco de dados SQLite
+│   ├── db.py                      # Conexão com SQLite usando SQLAlchemy
+│   ├── init_db.py                 # Criação da tabela users e usuário admin
+│   └── users.db                   # Arquivo do banco de dados SQLite
 │
 ├── models/
-│   ├── user.py              # Modelo SQLAlchemy para User
-│   ├── book_models.py       # Modelos Pydantic para livros e estatísticas
-│   └── health.py            # Modelo Pydantic para o health check
+│   ├── user.py                    # Modelo SQLAlchemy para User
+│   ├── book_models.py             # Modelos Pydantic para livros e estatísticas
+│   └── health.py                  # Modelo Pydantic para o health check
 │
 ├── scripts/
-│   └── webscraping_livros.py  # Script de scraping de livros
+│   ├── processamento_dados_ml.py  # Script de processamento de dados para ML
+│   └── webscraping_livros.py      # Script de scraping de livros
 │
 ├── data/
-│   └── info_livros.csv      # Arquivo CSV com os dados extraídos do site
+│   └── info_livros.csv            # Arquivo CSV com os dados extraídos do site
 │
-├── requirements.txt         # Lista de dependências do projeto
-├── README.md                # Documentação do projeto
-└── .gitignore               # Arquivos/pastas ignoradas pelo Git
+├── requirements.txt               # Lista de dependências do projeto
+├── README.md                      # Documentação do projeto
+├── .gitignore                     # Arquivos/pastas ignoradas pelo Git
 |
 ... (outros ficheiros de configuração)
 ```

@@ -42,10 +42,10 @@ Claro, aqui está um checklist simplificado em formato Markdown para você acomp
     - [x] Implementar autenticação com JWT.
     - [x] Criar endpoints `POST /api/v1/auth/login` e `refresh`.
     - [x] Proteger rotas de administração.
-- [ ] **Pipeline ML-Ready:**
-    - [ ] Criar endpoint `GET /api/v1/ml/features`.
-    - [ ] Criar endpoint `GET /api/v1/ml/training-data`.
-    - [ ] Criar endpoint `POST /api/v1/ml/predictions`.
+- [x] **Pipeline ML-Ready:**
+    - [x] Criar endpoint `GET /api/v1/ml/features`.
+    - [x] Criar endpoint `GET /api/v1/ml/training-data`.
+    - [x] Criar endpoint `POST /api/v1/ml/predictions`.
 - [ ] **Monitoramento & Analytics:**
     - [ ] Implementar logs estruturados.
     - [ ] Coletar métricas de performance.
