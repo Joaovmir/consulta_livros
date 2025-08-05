@@ -20,7 +20,7 @@ Claro, aqui está um checklist simplificado em formato Markdown para você acomp
 **Fase 3: Deploy e Documentação**
 - [ ] Organizar o código em um repositório no GitHub.
 - [ ] Escrever um `README.md` completo com todas as seções necessárias.
-- [ ] Fazer o deploy da API em uma plataforma pública (Heroku, Render, etc.).
+- [x] Fazer o deploy da API em uma plataforma pública (Heroku, Render, etc.).
 - [ ] Garantir que o link de deploy esteja funcional.
 - [ ] Criar o plano arquitetural do projeto.
 
@@ -38,14 +38,14 @@ Claro, aqui está um checklist simplificado em formato Markdown para você acomp
     - [x] `GET /api/v1/stats/categories`
     - [x] `GET /api/v1/books/top-rated`
     - [x] `GET /api/v1/books/price-range`
-- [ ] **Sistema de Autenticação:**
-    - [ ] Implementar autenticação com JWT.
-    - [ ] Criar endpoints `POST /api/v1/auth/login` e `refresh`.
-    - [ ] Proteger rotas de administração.
-- [ ] **Pipeline ML-Ready:**
-    - [ ] Criar endpoint `GET /api/v1/ml/features`.
-    - [ ] Criar endpoint `GET /api/v1/ml/training-data`.
-    - [ ] Criar endpoint `POST /api/v1/ml/predictions`.
+- [x] **Sistema de Autenticação:**
+    - [x] Implementar autenticação com JWT.
+    - [x] Criar endpoints `POST /api/v1/auth/login` e `refresh`.
+    - [x] Proteger rotas de administração.
+- [x] **Pipeline ML-Ready:**
+    - [x] Criar endpoint `GET /api/v1/ml/features`.
+    - [x] Criar endpoint `GET /api/v1/ml/training-data`.
+    - [x] Criar endpoint `POST /api/v1/ml/predictions`.
 - [ ] **Monitoramento & Analytics:**
     - [ ] Implementar logs estruturados.
     - [ ] Coletar métricas de performance.

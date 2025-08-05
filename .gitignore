@@ -1,4 +1,5 @@
 venv/
+env/
 /notebooks
 __pycache__/
 *.pyc
