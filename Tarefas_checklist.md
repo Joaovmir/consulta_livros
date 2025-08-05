@@ -20,8 +20,8 @@ Claro, aqui está um checklist simplificado em formato Markdown para você acomp
 **Fase 3: Deploy e Documentação**
 - [ ] Organizar o código em um repositório no GitHub.
 - [ ] Escrever um `README.md` completo com todas as seções necessárias.
-- [ ] Fazer o deploy da API em uma plataforma pública (Heroku, Render, etc.).
-- [ ] Garantir que o link de deploy esteja funcional.
+- [x] Fazer o deploy da API em uma plataforma pública (Heroku, Render, etc.).
+- [x] Garantir que o link de deploy esteja funcional.
 - [ ] Criar o plano arquitetural do projeto.
 
 **Fase 4: Apresentação e Extras**
