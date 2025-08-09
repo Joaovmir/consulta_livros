@@ -1,5 +1,3 @@
-Claro, aqui está um checklist simplificado em formato Markdown para você acompanhar o progresso do seu projeto.
-
 ### Checklist do Tech Challenge
 
 **Fase 1: Coleta de Dados**
@@ -47,6 +45,6 @@ Claro, aqui está um checklist simplificado em formato Markdown para você acomp
     - [x] Criar endpoint `GET /api/v1/ml/training-data`.
     - [x] Criar endpoint `POST /api/v1/ml/predictions`.
 - [ ] **Monitoramento & Analytics:**
-    - [ ] Implementar logs estruturados.
-    - [ ] Coletar métricas de performance.
+    - [x] Implementar logs estruturados.
+    - [x] Coletar métricas de performance.
     - [ ] Criar um dashboard de visualização (Streamlit).

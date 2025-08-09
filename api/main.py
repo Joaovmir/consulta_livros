@@ -16,6 +16,9 @@ from api.auth import authenticate_user, create_access_token, get_current_user
 from api.auth import get_db
 from datetime import timedelta
 
+# Observar métricas
+from prometheus_fastapi_instrumentator import Instrumentator
+
 # ---------------------------------------------------------------------------
 # 1. Importação de funções essenciais
 # ---------------------------------------------------------------------------
@@ -28,9 +31,12 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # scripts/webscraping_livros.py | função rodar_scraping
 from scripts.webscraping_livros import rodar_scraping
 
-# scripts\processamento_dados_ml.py | funções ml_features, ml_training_data
+# scripts/processamento_dados_ml.py | funções ml_features, ml_training_data
 from scripts.processamento_dados_ml import ml_features, ml_training_data
 from fastapi import Body
+
+# api/config_log.py | funções configure_logging, RequestLoggingMiddleware
+from api.config_log import configure_logging, RequestLoggingMiddleware
 
 # ---------------------------------------------------------------------------
 # 2. Importação dos modelos de dados com Pydantic
@@ -54,6 +60,19 @@ app = FastAPI(
         "email": "seu@email.com",
     },
 )
+
+# --- Estruturando logs ---
+
+configure_logging()
+app.add_middleware(RequestLoggingMiddleware)
+
+# --- Expondo métricas Prometheus ---
+
+Instrumentator(
+    should_group_status_codes=True,
+    should_ignore_untemplated=True, 
+    excluded_handlers={"/metrics"},
+).instrument(app).expose(app, endpoint="/metrics", include_in_schema=False)
 
 # --- Carregamento e Preparação dos Dados ---
 

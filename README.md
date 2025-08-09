@@ -16,7 +16,8 @@ O projeto está organizado da seguinte forma para manter o código limpo e modul
 │
 ├── api/
 │   ├── main.py                    # Código principal da API FastAPI
-│   ├── auth.py                    # Lógica de autenticação com JWT
+│   ├── config_log.py              # Configuração de log e middleware
+│   └── auth.py                    # Lógica de autenticação com JWT
 │
 ├── database/
 │   ├── db.py                      # Conexão com SQLite usando SQLAlchemy

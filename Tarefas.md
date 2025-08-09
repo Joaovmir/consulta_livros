@@ -1,5 +1,3 @@
-Claro, aqui está a lista de tarefas formatada para um arquivo Markdown, sem as citações.
-
 ### Entregáveis Obrigatórios
 
 Aqui está a lista dos itens que você deve obrigatoriamente entregar.
