@@ -127,7 +127,8 @@ def main ():
     print('🧹 Navegador encerrado.')
 
     # Salvamento dos dados
-    nome_arquivo_csv = input('💾 Escreva um nome para o arquivo de dados (apenas o nome, sem o formato .csv): ')
+    # nome_arquivo_csv = input('💾 Escreva um nome para o arquivo de dados (apenas o nome, sem o formato .csv): ')
+    nome_arquivo_csv = "info_livros"
     print('📂 4/4 Salvando arquivo...')
     tabela_livros = pd.DataFrame(info_livros)
     tabela_livros.to_csv(f'data/{nome_arquivo_csv}.csv', index = False, sep = ';')
