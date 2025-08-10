@@ -147,21 +147,7 @@ def get_livros():
         return []
     return dados_livros.to_dict(orient="records")
 
-@app.get(
-    "/api/v1/books/{id_livro}",
-    response_model=Book,
-    summary="Obter um livro por ID",
-    tags=["Livros"]
-)
-def get_livro_id(id_livro: int = Path(..., description="O ID do livro a ser buscado.", gt=-1)):
-    """
-    Busca um livro específico pelo seu ID. Retorna 404 se o livro não for encontrado.
-    """
-    livro = dados_livros[dados_livros['id'] == id_livro]
-    if livro.empty:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Livro com ID {id_livro} não encontrado.")
-    # .to_dict() retorna uma lista, pegamos o primeiro (e único) item
-    return livro.to_dict(orient="records")[0]
+
 
 @app.get(
     "/api/v1/books/search",
@@ -334,3 +320,18 @@ def predicoes_ml(payload: dict = Body(...)):
         "dados_recebidos": payload,
         "nota": "Este endpoint está pronto para integrar com um modelo ML no futuro."
     }
+@app.get(
+    "/api/v1/books/{id_livro}",
+    response_model=Book,
+    summary="Obter um livro por ID",
+    tags=["Livros"]
+)
+def get_livro_id(id_livro: int = Path(..., description="O ID do livro a ser buscado.", gt=-1)):
+    """
+    Busca um livro específico pelo seu ID. Retorna 404 se o livro não for encontrado.
+    """
+    livro = dados_livros[dados_livros['id'] == id_livro]
+    if livro.empty:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Livro com ID {id_livro} não encontrado.")
+    # .to_dict() retorna uma lista, pegamos o primeiro (e único) item
+    return livro.to_dict(orient="records")[0]

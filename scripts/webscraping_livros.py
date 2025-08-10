@@ -95,16 +95,18 @@ def coleta_info_livros(driver:webdriver, links_livros:list[str]):
 # ----------------------- PROGRAMA PRINCIPAL -----------------------
 def main ():
     print('🔄 Iniciando o scraper de livros do site Books to Scrape...')
-    navegador_visivel = input("Deseja abrir o navegador visivelmente? (s/n): ").strip().lower()
 
     # Configuração do navegador
     print('🛠️  Configurando o navegador...')
     options = Options()
-    if navegador_visivel != 's':
-        print("🔒 Modo oculto (headless) ativado.")
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        options.add_argument('--window-size=1920,1080')
+
+    print("🔒 Modo oculto (headless) ativado.")
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--window-size=1920,1080')
+        # Adicione estes argumentos para maior compatibilidade em ambientes como o Render
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 

@@ -1,121 +1,164 @@
 # Projeto: API de Consulta de Livros
 
-Este projeto consiste em duas partes principais que trabalham em conjunto:
+## 1. Descrição do Projeto e Arquitetura
 
-1.  **Web Scraper**: Um script em Python (`scripts/webscraping_livros.py`) que utiliza Selenium para extrair dados de livros do site [Books to Scrape](http://books.toscrape.com). Os dados recolhidos são guardados num ficheiro CSV.
-2.  **API REST**: Uma API (`api/main.py`) construída com FastAPI que lê o ficheiro CSV e disponibiliza os dados através de vários endpoints, permitindo consultas, filtros e a visualização de estatísticas.
+### Descrição
 
------
+Este projeto implementa uma solução completa para a extração e consulta de dados de livros, combinando um web scraper com uma API RESTful.
 
-## 📂 Estrutura de Pastas
+* **Web Scraper**: Um script (`scripts/webscraping_livros.py`) utiliza Selenium para extrair dados detalhados de livros do site [Books to Scrape](http://books.toscrape.com), guardando as informações num CSV.
+* **API REST**: Uma API (`api/main.py`) construída com FastAPI que serve os dados extraídos através de múltiplos endpoints. A API inclui funcionalidades de pesquisa, filtros, estatísticas, autenticação de utilizadores com JWT e endpoints protegidos para tarefas administrativas.
 
-O projeto está organizado da seguinte forma para manter o código limpo e modular:
+O projeto também inclui a preparação de dados para futuros modelos de Machine Learning, logging estruturado, e métricas no padrão Prometheus para monitorização.
 
-```
-/CONSULTA_LIVROS/
-│
-├── api/
-│   ├── main.py                    # Código principal da API FastAPI
-│   ├── config_log.py              # Configuração de log e middleware
-│   └── auth.py                    # Lógica de autenticação com JWT
-│
-├── database/
-│   ├── db.py                      # Conexão com SQLite usando SQLAlchemy
-│   ├── init_db.py                 # Criação da tabela users e usuário admin
-│   └── users.db                   # Arquivo do banco de dados SQLite
-│
-├── models/
-│   ├── user.py                    # Modelo SQLAlchemy para User
-│   ├── book_models.py             # Modelos Pydantic para livros e estatísticas
-│   └── health.py                  # Modelo Pydantic para o health check
-│
-├── scripts/
-│   ├── processamento_dados_ml.py  # Script de processamento de dados para ML
-│   └── webscraping_livros.py      # Script de scraping de livros
-│
-├── data/
-│   └── info_livros.csv            # Arquivo CSV com os dados extraídos do site
-│
-├── requirements.txt               # Lista de dependências do projeto
-├── README.md                      # Documentação do projeto
-├── .gitignore                     # Arquivos/pastas ignoradas pelo Git
-|
-... (outros ficheiros de configuração)
-```
+### 🚀 **API em Produção**
 
------
+A API está implantada e disponível para uso em:
 
-## ⚙️ Pré-requisitos
+**[https://consulta-livros.onrender.com/](https://consulta-livros.onrender.com/)**
 
-Antes de começar, certifique-se de que tem o **Python 3.10+** instalado. Depois, abra o seu terminal na pasta raiz do projeto (`/CONSULTA_LIVROS/`) e instale todas as bibliotecas necessárias a partir do ficheiro `requirements.txt`.
+A documentação interativa (Swagger UI) pode ser acedida em:
 
-```bash
-pip install -r requirements.txt
-```
+**[https://consulta-livros.onrender.com/docs](https://consulta-livros.onrender.com/docs)**
 
------
+### Arquitetura
 
-## 🚀 Como Executar o Projeto
+O projeto é modular e está organizado da seguinte forma para separar responsabilidades:
 
-Siga estes passos na ordem correta. **Execute todos os comandos a partir da pasta raiz do projeto (`/CONSULTA_LIVROS/`)**.
+* **/api**: Contém a lógica da aplicação FastAPI.
+* **/database**: Responsável pela interação com a base de dados de utilizadores.
+* **/models**: Define os esquemas de dados (Pydantic e SQLAlchemy).
+* **/scripts**: Contém scripts autónomos como o web scraper e o processamento de dados.
+* **/data**: Armazena o CSV com os dados dos livros.
 
-### **(Opcional) Passo 1: Extrair os Dados**
+## 2. Como Usar a API
 
-Caso ainda não tenha o arquivo de dados, execute o scraping. O scraping só pode ser executado via endpoint da API, pois implementamos autenticação para proteger a rota, e requer um **usuário autenticado com perfil admin**.
+### Opção 1: Usar a API em Produção (Recomendado)
 
-1. Inicie a API:
-```bash
-uvicorn api.main:app --reload
-```
+A maneira mais fácil de testar é usar a versão ao vivo. Não é necessária nenhuma instalação.
 
-2. Faça login (via Postman):
-- Método: POST
-- URL: http://127.0.0.1:8000/api/v1/auth/login
-- Body (x-www-form-urlencoded):
-  - username: admin
-  - password: admin123
+1.  **Explore os Endpoints**: Abra a [documentação interativa](https://consulta-livros.onrender.com/docs) para ver e testar todas as rotas diretamente no seu navegador.
+2.  **Autenticação**: Para usar as rotas protegidas, obtenha um token de acesso fazendo um `POST` para `https://consulta-livros.onrender.com/api/v1/auth/login` com as credenciais `admin` / `admin123`.
 
-Copie o access_token da resposta.
+### Opção 2: Executar o Projeto Localmente
 
-3. Faça a chamada para o endpoint de scraping:
-- Método: POST
-- URL: http://127.0.0.1:8000/api/v1/scraping/trigger
-  - Headers:
-    - Authorization: Bearer <cole_seu_token_aqui>
+Siga estes passos se quiser executar a API no seu próprio computador para desenvolvimento. Execute todos os comandos a partir da pasta raiz do projeto.
 
-Isso irá:
+**Pré-requisito**: Python 3.10+
 
-1.  Solicitar no terminal se "Deseja abrir o navegador visivelmente? (s/n)"
-2.  Iniciar um navegador Chrome em segundo plano (modo *headless*).
-3.  Navegar pelo site `books.toscrape.com` e recolher os dados.
-4.  Criar a pasta `data/` (se não existir) 
-5.  Solicitar "Escreva um nome para o arquivo de dados (apenas o nome, sem o formato .csv):"
-6.  Informe o nome `info_livros`.
-7.  Guardar tudo no ficheiro `data/info_livros.csv`.
+1.  **Instale as dependências**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+2.  **Inicialize a Base de Dados**: Este comando cria a base de dados de utilizadores e adiciona um utilizador `admin` com a senha `admin123`. Execute-o apenas uma vez.
+    ```bash
+    python database/init_db.py
+    ```
+3.  **Inicie a API**:
+    ```bash
+    uvicorn api.main:app --reload
+    ```
+    O servidor estará a correr em `http://127.0.0.1:8000`.
 
-Aguarde até que a mensagem `✅ Arquivo salvo com sucesso.` apareça no terminal.
+4.  **(Opcional) Execute o Web Scraper**: Se o ficheiro `data/info_livros.csv` não existir, acione o scraping através da API local (ver exemplos na secção 4, usando o URL local).
 
-### **Passo 2: Iniciar a API**
+## 3. Documentação das Rotas da API
 
-Caso não tenha iniciado a API mas já tem o ficheiro `info_livros.csv` já criado, pode iniciar o servidor da API.
+A documentação completa e interativa para todas as rotas está disponível em **[Swagger UI](https://consulta-livros.onrender.com/docs)**.
 
-```bash
-uvicorn api.main:app --reload
-```
+Abaixo está um resumo das rotas disponíveis:
 
-  * `api.main`: Indica ao Uvicorn para procurar o objeto `app` dentro do ficheiro `main.py` que está na pasta `api/`.
-  * `--reload`: Reinicia o servidor automaticamente sempre que fizer alterações no código.
+### Status
+* `GET /api/v1/health`
 
-O terminal deverá mostrar uma mensagem a indicar que o servidor está a funcionar:
+### Livros
+* `GET /api/v1/books`
+* `GET /api/v1/books/{id_livro}`
+* `GET /api/v1/books/search`
+* `GET /api/v1/books/top-rated`
+* `GET /api/v1/books/price-range`
 
-```
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-```
+### Categorias
+* `GET /api/v1/categories`
 
-### **Passo 3: Ver a Documentação e Usar a API**
+### Estatísticas
+* `GET /api/v1/stats/overview`
+* `GET /api/v1/stats/categories`
 
-Agora que o servidor está ativo, abra o seu navegador de internet e aceda ao seguinte endereço:
+### Autenticação (Protegido por cadeado no Swagger)
+* `POST /api/v1/auth/login`
+* `POST /api/v1/auth/refresh`
 
-[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+### Admin (Protegido por cadeado no Swagger)
+* `POST /api/v1/scraping/trigger`
 
-Irá ver a documentação interativa do **Swagger UI**, onde pode explorar e testar todos os endpoints da sua API diretamente no navegador.
+### Machine Learning
+* `GET /api/v1/ml/features`
+* `GET /api/v1/ml/training-data`
+* `POST /api/v1/ml/predictions`
+
+
+## 4. Exemplos de Chamadas
+
+Estes exemplos utilizam a API em produção.
+
+### Buscar um livro por ID
+
+* **Request**:
+    ```http
+    GET [https://consulta-livros.onrender.com/api/v1/books/1](https://consulta-livros.onrender.com/api/v1/books/1)
+    ```
+
+* **Response** (Exemplo):
+    ```json
+    {
+      "id": 1,
+      "titulo": "Tipping the Velvet",
+      "preco": 53.74,
+      "avaliacao": 1,
+      "disponibilidade": true,
+      "estoque": 20,
+      "categoria": "Historical",
+      "imagem": "https://books.toscrape.com/media/cache/08/e9/08e94f3731d7d6b760dfbfbc02ca5c62.jpg"
+    }
+    ```
+
+### Pesquisar livros por título
+
+* **Request**:
+    ```http
+    GET [https://consulta-livros.onrender.com/api/v1/books/search?title=light](https://consulta-livros.onrender.com/api/v1/books/search?title=Velvet)
+    ```
+
+* **Response**
+    ```json
+    [
+        {
+            "id": 1,
+            "titulo": "Tipping the Velvet",
+            "preco": 53.74,
+            "avaliacao": 1,
+            "disponibilidade": true,
+            "estoque": 20,
+            "categoria": "Historical",
+            "imagem": "https://books.toscrape.com/media/cache/08/e9/08e94f3731d7d6b760dfbfbc02ca5c62.jpg"
+        }
+    ]
+    ```
+
+### Fazer Login
+
+* **Request**:
+    ```bash
+    curl -X POST "[https://consulta-livros.onrender.com/api/v1/auth/login](https://consulta-livros.onrender.com/api/v1/auth/login)" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "username=admin&password=admin123"
+    ```
+
+* **Response**:
+    ```json
+    {
+      "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "token_type": "bearer"
+    }
+    ```
