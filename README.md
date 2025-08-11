@@ -37,7 +37,7 @@ A documentação interativa (Swagger UI) pode ser acedida em:
 
 ### Vídeo de Apresentação (Pitch)
 
-[O link para o vídeo de apresentação no YouTube será inserido aqui]
+[Vídeo de Apresentação](https://youtu.be/NwEYryrF8EE)
 
 ### Diagrama da Arquitetura
 
